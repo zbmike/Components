@@ -1,9 +1,9 @@
-import './App.css';
+import MusicPlayer from "./components/music_player";
 
 function App() {
   return (
     <div className="App">
-      Componensts
+      <MusicPlayer />
     </div>
   );
 }
