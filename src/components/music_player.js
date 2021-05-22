@@ -8,24 +8,44 @@ const musicList = [
 
 function MusicPlayer() {
   const audioRef = useRef();
+  const progressRef = useRef();
+  const progressContainerRef = useRef();
   const [playing, setPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const ref = audioRef.current;
+    const audioElem = audioRef.current;
+    const progressElem = progressRef.current;
+    const progressContainerElem = progressContainerRef.current;
     const nextSong = () => {
       if (currentIndex === musicList.length - 1) return;
       setCurrentIndex((currentIndex) => currentIndex + 1);
       setTimeout(function () {
-        ref.play();
+        audioElem.play();
       }, 150);
-      
     };
-    if (audioRef && ref) {
-      ref.addEventListener("ended", nextSong);
-      ref.addEventListener("ended", timeupdate);
+
+    const updateProgress = (e) => {
+      const { duration, currentTime } = e.srcElement;
+      const progressPercent = (currentTime / duration) * 100;
+      progressElem.style.width = `${progressPercent}%`;
+    };
+
+    const setProgress = (e) => {
+      const width = e.srcElement.clientWidth;
+      const clickX = e.offsetX;
+      const duration = audioElem.duration;
+      audioElem.currentTime = (clickX / width) * duration;
+    };
+
+    if (audioRef && progressRef && audioElem && progressElem) {
+      audioElem.addEventListener("ended", nextSong);
+      audioElem.addEventListener("timeupdate", updateProgress);
+      progressContainerElem.addEventListener("click", setProgress);
       return () => {
-        ref.removeEventListener("ended", nextSong);
+        audioElem.removeEventListener("ended", nextSong);
+        audioElem.removeEventListener("timeupdate", updateProgress);
+        progressContainerElem.removeEventListener("click", setProgress);
       };
     }
   });
@@ -55,8 +75,8 @@ function MusicPlayer() {
     <div className={`music-player${playing ? " play" : ""}`}>
       <div className="music-player--info">
         <h4 className="music-player--title">{`${musicList[currentIndex]}`}</h4>
-        <div className="music-player--progress-container">
-          <div className="music-player--progress-bar"></div>
+        <div className="music-player--progress-container" ref={progressContainerRef}>
+          <div className="music-player--progress-bar" ref={progressRef}></div>
         </div>
       </div>
 
