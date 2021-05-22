@@ -16,12 +16,14 @@ function MusicPlayer() {
     const nextSong = () => {
       if (currentIndex === musicList.length - 1) return;
       setCurrentIndex((currentIndex) => currentIndex + 1);
-      setTimeout(function () {      
+      setTimeout(function () {
         ref.play();
-     }, 150);
+      }, 150);
+      
     };
     if (audioRef && ref) {
       ref.addEventListener("ended", nextSong);
+      ref.addEventListener("ended", timeupdate);
       return () => {
         ref.removeEventListener("ended", nextSong);
       };
@@ -37,21 +39,20 @@ function MusicPlayer() {
     if (currentIndex < 1) return;
     setPlaying(true);
     setCurrentIndex(currentIndex - 1);
-    setTimeout(function () {      
-        audioRef.current.play();
-     }, 150);
-    
+    setTimeout(function () {
+      audioRef.current.play();
+    }, 150);
   };
   const handleNext = (e) => {
     if (currentIndex === musicList.length - 1) return;
     setPlaying(true);
     setCurrentIndex(currentIndex + 1);
-    setTimeout(function () {      
-        audioRef.current.play();
-     }, 150);
+    setTimeout(function () {
+      audioRef.current.play();
+    }, 150);
   };
   return (
-    <div className="music-player">
+    <div className={`music-player${playing ? " play" : ""}`}>
       <div className="music-player--info">
         <h4 className="music-player--title">{`${musicList[currentIndex]}`}</h4>
         <div className="music-player--progress-container">
@@ -76,7 +77,10 @@ function MusicPlayer() {
         >
           <i className="fas fa-backward"></i>
         </button>
-        <button className="music-player--control__btn" onClick={handlePlay}>
+        <button
+          className="music-player--control__btn music-player--control__btn_big"
+          onClick={handlePlay}
+        >
           <i className={`fas ${playing ? "fa-pause" : "fa-play"}`}></i>
         </button>
         <button
