@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const musicList = [
   "bensound-creativeminds",
@@ -11,6 +11,23 @@ function MusicPlayer() {
   const [playing, setPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  useEffect(() => {
+    const ref = audioRef.current;
+    const nextSong = () => {
+      if (currentIndex === musicList.length - 1) return;
+      setCurrentIndex((currentIndex) => currentIndex + 1);
+      setTimeout(function () {      
+        ref.play();
+     }, 150);
+    };
+    if (audioRef && ref) {
+      ref.addEventListener("ended", nextSong);
+      return () => {
+        ref.removeEventListener("ended", nextSong);
+      };
+    }
+  });
+
   const handlePlay = (e) => {
     if (playing) audioRef.current.pause();
     else audioRef.current.play();
@@ -18,15 +35,20 @@ function MusicPlayer() {
   };
   const handlePrev = (e) => {
     if (currentIndex < 1) return;
-    audioRef.current.pause();
-    setPlaying(false);
-    setCurrentIndex((currentIndex) => currentIndex - 1);
+    setPlaying(true);
+    setCurrentIndex(currentIndex - 1);
+    setTimeout(function () {      
+        audioRef.current.play();
+     }, 150);
+    
   };
   const handleNext = (e) => {
-    if (currentIndex > musicList.length - 2) return;
-    audioRef.current.pause();
-    setPlaying(false);
-    setCurrentIndex((currentIndex) => currentIndex + 1);
+    if (currentIndex === musicList.length - 1) return;
+    setPlaying(true);
+    setCurrentIndex(currentIndex + 1);
+    setTimeout(function () {      
+        audioRef.current.play();
+     }, 150);
   };
   return (
     <div className="music-player">
@@ -40,6 +62,7 @@ function MusicPlayer() {
       <audio
         src={`./music/${musicList[currentIndex]}.mp3`}
         ref={audioRef}
+        id="aux"
       ></audio>
       <div className="music-player--art-container">
         <img src={`./images/${musicList[currentIndex]}.jpg`} alt="music-art" />
