@@ -1,24 +1,31 @@
 import { useRef, useState, useEffect } from "react";
 
-const musicList = [
-  "bensound-creativeminds",
-  "bensound-hey",
-  "bensound-littleidea",
-];
-
 function MusicPlayer() {
   const audioRef = useRef();
   const progressRef = useRef();
   const progressContainerRef = useRef();
   const [playing, setPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [musicList, setMusicList] = useState([]);
+
+  const nameArr = Object.keys(musicList);
+
+  useEffect(() => {
+    async function getMusicNames() {
+      const res = await fetch('http://localhost:5000/api/get-music');
+      const data = await res.json();
+      setMusicList(data);
+    }
+    getMusicNames();
+
+  }, []);
 
   useEffect(() => {
     const audioElem = audioRef.current;
     const progressElem = progressRef.current;
     const progressContainerElem = progressContainerRef.current;
     const nextSong = () => {
-      if (currentIndex === musicList.length - 1) return;
+      if (currentIndex === nameArr.length - 1) return;
       setCurrentIndex((currentIndex) => currentIndex + 1);
       setTimeout(function () {
         audioElem.play();
@@ -38,7 +45,14 @@ function MusicPlayer() {
       audioElem.currentTime = (clickX / width) * duration;
     };
 
-    if (audioRef && progressRef && audioElem && progressElem) {
+    if (
+      audioRef &&
+      progressRef &&
+      progressContainerRef &&
+      audioElem &&
+      progressElem &&
+      progressContainerElem
+    ) {
       audioElem.addEventListener("ended", nextSong);
       audioElem.addEventListener("timeupdate", updateProgress);
       progressContainerElem.addEventListener("click", setProgress);
@@ -64,7 +78,7 @@ function MusicPlayer() {
     }, 150);
   };
   const handleNext = (e) => {
-    if (currentIndex === musicList.length - 1) return;
+    if (currentIndex === nameArr.length - 1) return;
     setPlaying(true);
     setCurrentIndex(currentIndex + 1);
     setTimeout(function () {
@@ -73,40 +87,43 @@ function MusicPlayer() {
   };
   return (
     <div className={`music-player${playing ? " play" : ""}`}>
-      <div className="music-player--info">
-        <h4 className="music-player--title">{`${musicList[currentIndex]}`}</h4>
-        <div className="music-player--progress-container" ref={progressContainerRef}>
-          <div className="music-player--progress-bar" ref={progressRef}></div>
+      <div className="music-player__info">
+        <h4 className="music-player__title">{`${nameArr[currentIndex]}`}</h4>
+        <div
+          className="music-player__progress-container"
+          ref={progressContainerRef}
+        >
+          <div className="music-player__progress-bar" ref={progressRef}></div>
         </div>
       </div>
 
       <audio
-        src={`./music/${musicList[currentIndex]}.mp3`}
+        src={`./music/${nameArr[currentIndex]}.mp3`}
         ref={audioRef}
         id="aux"
       ></audio>
-      <div className="music-player--art-container">
-        <img src={`./images/${musicList[currentIndex]}.jpg`} alt="music-art" />
+      <div className="music-player__art-container">
+        <img src={musicList[nameArr[currentIndex]] ? `./images/${nameArr[currentIndex]}.jpg` : `./images/CDCover.jpg`} alt="music-art" />
       </div>
 
-      <div className="music-player--control">
+      <div className="music-player__control">
         <button
-          className="music-player--control__btn"
+          className="music-player__control--btn"
           onClick={handlePrev}
           disabled={currentIndex === 0}
         >
           <i className="fas fa-backward"></i>
         </button>
         <button
-          className="music-player--control__btn music-player--control__btn_big"
+          className="music-player__control--btn music-player__control--btn_big"
           onClick={handlePlay}
         >
           <i className={`fas ${playing ? "fa-pause" : "fa-play"}`}></i>
         </button>
         <button
-          className="music-player--control__btn"
+          className="music-player__control--btn"
           onClick={handleNext}
-          disabled={currentIndex === musicList.length - 1}
+          disabled={currentIndex === nameArr.length - 1}
         >
           <i className="fas fa-forward"></i>
         </button>

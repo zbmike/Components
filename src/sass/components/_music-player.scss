@@ -29,12 +29,12 @@ body {
   margin: 100px 0;
   z-index: 10;
 
-  &--art-container {
+  &__art-container {
     position: relative;
     width: 110px;
   }
 
-  &--art-container::after {
+  &__art-container::after {
     content: "";
     background-color: #fff;
     border-radius: 50%;
@@ -46,7 +46,7 @@ body {
     transform: translate(-50%, 50%);
   }
 
-  &--art-container img {
+  &__art-container img {
     border-radius: 50%;
     object-fit: cover;
     height: 110px;
@@ -58,17 +58,17 @@ body {
     animation-play-state: paused;
   }
 
-  &.play &--art-container img {
+  &.play &__art-container img {
     animation-play-state: running;
   }
 
-  &--control {
+  &__control {
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1;
 
-    &__btn {
+    &--btn {
       background-color: #fff;
       border: 0;
       color: hsl(300, 3%, 73%);
@@ -78,21 +78,21 @@ body {
       margin: 0 20px;
     }
 
-    &__btn:disabled {
+    &--btn:disabled {
       color: hsl(300, 11%, 89%);
     }
 
-    &__btn:focus {
+    &--btn:focus {
       outline: 0;
     }
 
-    &__btn_big {
+    &--btn_big {
       color: hsl(287, 9%, 68%);
       font-size: 30px;
     }
   }
 
-  &--info {
+  &__info {
     background-color: rgba(255, 255, 255, 0.5);
     border-radius: 15px 15px 0 0;
     position: absolute;
@@ -106,16 +106,16 @@ body {
     z-index: 0;
   }
 
-  &.play &--info {
+  &.play &__info {
     opacity: 1;
     transform: translateY(-100%);
   }
 
-  &--info h4 {
+  &__info h4 {
     margin: 0;
   }
 
-  &--progress-container {
+  &__progress-container {
     background: #fff;
     border-radius: 5px;
     cursor: pointer;
@@ -124,7 +124,7 @@ body {
     width: 100%;
   }
 
-  &--progress-bar {
+  &__progress-bar {
     background-color: #fe8daa;
     border-radius: 5px;
     height: 100%;
