@@ -30,19 +30,18 @@ app.get(
       .catch((err) => console.error(err));
     images.forEach((name) => {
       const key = name.split(".")[0];
-      filenames[key] = true;
+      if (filenames.hasOwnProperty(key)) filenames[key] = true;
     });
     console.log(filenames);
     return res.json(filenames);
   }
 );
 
-app.use(express.static(path.join(__dirname, "..", "build")));
-app.use(express.static("public"));
-
-app.use((req, res, next) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
 });
+
+app.use(express.static(path.join(__dirname, "..", "build")));
 
 app.listen(5000, () => {
   console.log("server started on port 5000");

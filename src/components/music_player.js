@@ -6,7 +6,7 @@ function MusicPlayer() {
   const progressContainerRef = useRef();
   const [playing, setPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [musicList, setMusicList] = useState([]);
+  const [musicList, setMusicList] = useState({});
 
   const nameArr = Object.keys(musicList);
 
@@ -64,6 +64,8 @@ function MusicPlayer() {
     }
   });
 
+  if (nameArr.length < 1) return null;
+  
   const handlePlay = (e) => {
     if (playing) audioRef.current.pause();
     else audioRef.current.play();
